@@ -1,0 +1,14 @@
+.idea/
+*.spyproject/
+1-Data_generation/Inputs/
+1-Data_generation/Logs/
+1-Data_generation/Outputs/
+1-Data_generation/Tests/
+run.prof
+*/Logs/
+*__pycache__
+*/Tests/
+.Rproj.user
+2-Benchmark/
+venv/
+edf_proxy/
