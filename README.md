@@ -2,12 +2,13 @@
 
 ## Overview
 
-**You can directly use the dataset with the data from ... to ... which is stored in ...**
+**You can directly download the final dataset called *dataset_national.csv* spanning from 2013-01-08 to 2023-03-01 
+at https://drive.google.com/file/d/1iMLPkr9nzXOF9cORLBsICDBLPcg0a7m5/view?usp=drive_link.**
 
 ## Citation
 
     @article{,
-      title={Mobility data assimilation to forecast electricity demand in a sobriety context in France},
+      title={Human spatial dynamics for electricity demand forecasting: the case of France during the 2022 energy crisis},
       author={Doumèche, Nathan and Allioux, Yann and Goude, Yannig and Rubrichi, Stefania},
       journal={},
       volume={},
@@ -17,6 +18,9 @@
     }
 
 ## 1. Installation guide
+
+### Add the heavy data
+Go to the folder 1-Data_generation and unzip the Input.zip file available at https://drive.google.com/file/d/1CWKafkx8yXZLLlzOdq1AXNny-mLax_Wj/view?usp=drive_link.
 
 ### Build the dataset
 Install a Python IDE (Pycharm, Visual Studio Code...) and use it to open the folder 1-Data_generation. 
