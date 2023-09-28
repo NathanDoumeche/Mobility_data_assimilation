@@ -196,7 +196,7 @@ def merge_and_transform(national_or_regional_features="national"):
                                                'temperature' + region + "_min_smooth_950"]
 
     features_to_keep = features_to_keep + [col for col in calendar.columns if col not in ["date", "Date", "tod"]]
-    regional_merge = regional_merge[features_to_keep]
+    regional_merge = regional_merge[features_to_keep].copy()
 
     # min/max dates : valid observations management
     # rte_kept_features na removal before min/max dates calculation

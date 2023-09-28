@@ -88,6 +88,9 @@ def data_generation_meteo_per_station_with_na(synop_data, data_calendar, closest
                                       on="date")
         synop_data_station['city'] = city
         synop_data_station['region'] = region
+
+        logging.info("\n\nData meteo - station " + city + " - " + region + " :")
+        Rsummary(synop_data_station)
         data_meteo_by_station = pd.concat([data_meteo_by_station, synop_data_station])
 
     data_meteo_by_station = data_meteo_by_station.sort_values(by='date').reset_index(drop=True)
@@ -143,7 +146,7 @@ def fill_by_tod_interpolation(data, var):
 
     for tod in set(data["tod"]):
         data_tod = data[data["tod"] == tod].reset_index(drop=True)
-        data_tod[var + "_interpolate"] = data[var].interpolate(method='linear', limit_direction="both")
+        data_tod[var + "_interpolate"] = data_tod[var].interpolate(method='linear', limit=7, limit_direction="both")
         data_interpolated_by_tod = pd.concat([data_interpolated_by_tod, data_tod])
 
     data_interpolated_by_tod = data_interpolated_by_tod.sort_values(by='date').reset_index(drop=True)
@@ -156,9 +159,6 @@ def fill_by_tod_interpolation(data, var):
 
 
 def fill_missing_data_by_station(data_meteo_by_station, var, closest_stations_by_stations):
-    data_meteo_by_station[var + "_closest_with_lr"] = data_meteo_by_station[var]
-    var = var + "_closest_with_lr"
-
     regions_cities = sorted(closest_stations_by_stations.keys())
 
     data_per_station = {}
@@ -196,7 +196,12 @@ def fill_missing_data_by_station(data_meteo_by_station, var, closest_stations_by
             data_per_station[(region, city)] = fill_by_tod_interpolation(data=data_per_station[(region, city)], var=var)
             log_per_station[(region, city)] = log_per_station[(region, city)] + info_na(
                 data=data_per_station[(region, city)], var=var, title="step 3 - interpolation by tod")
-        data_meteo_by_station_completed = pd.concat([data_meteo_by_station_completed, data_per_station[(region, city)]])
+        if data_per_station[(region, city)][var].isna().sum() == 0:
+            data_meteo_by_station_completed = pd.concat(
+                [data_meteo_by_station_completed, data_per_station[(region, city)]])
+        else:
+            log_per_station[(region, city)] = log_per_station[(region,
+                                                               city)] + f'\n*** Not enough data --- SYNOP meteo station - {var} - city : {city} / region {region}  ***'
         logging.info(log_per_station[(region, city)])
 
     data_meteo_by_station_completed = data_meteo_by_station_completed.sort_values(by='date').reset_index(drop=True)
@@ -231,7 +236,7 @@ def meteo_3h_to_30min_interpolation(data_meteo_by_region, data_calendar_3h, data
         for var in ["temperature", "wind", "nebulosity"]:
             logging.info("\n\nbefore interpolation")
             Rsummary(data_meteo[[var + "_" + region]])
-            data_meteo[var + "_" + region] = data_meteo[var + "_" + region].interpolate(method='linear',
+            data_meteo[var + "_" + region] = data_meteo[var + "_" + region].interpolate(method='linear', limit=7,
                                                                                         limit_direction="both")
 
             logging.info("\n\nafter interpolation")
@@ -282,22 +287,40 @@ def process_synop_temperature_datas():
                                                                       data_calendar=data_calendar_3h,
                                                                       closest_stations_by_stations=closest_stations_by_stations)
 
+    logging.info("\n\n----Data meteo by station - function data_generation_meteo_per_station_with_na ----")
+    Rsummary(data_meteo_by_station)
+    logging.info("\n\n")
+
     for var in ["temperature", "wind", "nebulosity"]:
         data_meteo_by_station = fill_missing_data_by_station(data_meteo_by_station=data_meteo_by_station, var=var,
                                                              closest_stations_by_stations=closest_stations_by_stations)
 
+    logging.info("\n\n---- Data meteo by station - function fill_missing_data_by_station ----")
+    Rsummary(data_meteo_by_station)
+    logging.info("\n\n")
+
     data_meteo_by_region = data_generation_meteo_per_region(data_meteo_by_station=data_meteo_by_station,
                                                             data_calendar=data_calendar_3h)
+
+    logging.info("\n\n---- Data meteo by region - function data_generation_meteo_per_region ----")
+    Rsummary(data_meteo_by_region)
+    logging.info("\n\n")
 
     data_meteo_by_region = meteo_3h_to_30min_interpolation(data_meteo_by_region=data_meteo_by_region,
                                                            data_calendar_3h=data_calendar_3h,
                                                            data_calendar_30min=data_calendar_30min)
 
+    logging.info("\n\n---- Data meteo by region - function meteo_3h_to_30min_interpolation ----")
     Rsummary(data_meteo_by_region)
+    logging.info("\n\n")
 
     data_meteo_by_region_and_national = national_data_meteo_by_electrical_load_weight(
         data_meteo_by_region=data_meteo_by_region)
+
+    logging.info(
+        "\n\n---- Data meteo by region + national - function national_data_meteo_by_electrical_load_weight ----")
     Rsummary(data_meteo_by_region_and_national)
+    logging.info("\n\n")
 
     data_meteo_by_region_and_national.to_feather("Outputs/synop.feather")
     return data_meteo_by_region_and_national
