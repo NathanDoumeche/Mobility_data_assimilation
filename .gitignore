@@ -9,6 +9,5 @@ run.prof
 *__pycache__
 */Tests/
 .Rproj.user
-2-Benchmark/
 venv/
 edf_proxy/
