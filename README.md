@@ -7,10 +7,10 @@ at https://drive.google.com/file/d/1iMLPkr9nzXOF9cORLBsICDBLPcg0a7m5/view?usp=dr
 
 ## Citation
 
-    @article{,
+    @article{doumeche2023human,
       title={Human spatial dynamics for electricity demand forecasting: the case of France during the 2022 energy crisis},
       author={Doumèche, Nathan and Allioux, Yann and Goude, Yannig and Rubrichi, Stefania},
-      journal={},
+      journal={arXiv:2309.16238},
       volume={},
       pages={},
       year={2023},
