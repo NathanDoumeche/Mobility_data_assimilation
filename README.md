@@ -2,7 +2,7 @@
 
 ## Overview
 
-**You can directly download the final dataset called *dataset_national.csv* spanning from 2013-01-08 to 2023-03-01 
+**You can directly download the final dataset called *dataset_national.csv* spanning from 2013-01-08 to 2023-03-01 on Zenodo at https://zenodo.org/records/10041368, or directly at
 at https://drive.google.com/file/d/1iMLPkr9nzXOF9cORLBsICDBLPcg0a7m5/view?usp=drive_link.**
 
 ## Citation
